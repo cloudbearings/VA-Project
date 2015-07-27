@@ -1,4 +1,6 @@
 # VA-Project
+**IMPORTANT NOTE**: I'm working harder on a new version of the recognition algorithm, so this is not available yet. **IT IS NOT AN *ARTIFICAL INTELLIGENCE* YET!**
+
 Virtual Assistant in Java. It includes an excelent Google Speech API support. You may use it with your own projects, but remember to respect this project's license.
 
 YOU NEED A **CHROMIUM API KEY**, AN **AMAZON ACCESS KEY** AND AN **AMAZON SECRET CODE** TO MAKE IT WORK.
