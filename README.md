@@ -4,10 +4,8 @@
 Virtual Assistant in Java. It includes an excelent Google Speech API support. You may use it with your own projects, but remember to respect this project's license.
 
 YOU NEED A **CHROMIUM API KEY**, AN **AMAZON ACCESS KEY** AND AN **AMAZON SECRET CODE** TO MAKE IT WORK.
-You need to insert your keys in the following classes:
-   (Class.java :lineNumber)
- - Initializer.java :37
- - AssistantUtils.java :20
+You need to insert your keys and change the language to English in the following classes:
+ - Config.java
 
 MAVEN SUPPORT COMING SOON!
 
@@ -16,8 +14,6 @@ Assistente Virtual em Java. Este projeto inclui um suporte excelente ao Google S
 
 VOCÊ PRECISA DE UMA **CHROMIUM API KEY**, DE UMA **AMAZON ACCESS KEY** E DE UM **AMAZON SECRET CODE** PARA PODER FAZER O PROGRAMA FUNCIONAR!
 Você deve inserir suas chaves nas seguintes classes:
-   (Classe.java :linha)
- - Initializer.java :37
- - AssistantUtils.java :20
+ - Config.java
 
 SUPORTE A MAVEN EM BREVE!
