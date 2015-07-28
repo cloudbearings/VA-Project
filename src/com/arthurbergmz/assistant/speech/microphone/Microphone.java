@@ -37,7 +37,6 @@ public class Microphone {
 	}
 	
 	public File getFile(){
-		System.out.println("FILE SIZE: " + this.file.length());
 		return this.file;
 	}
 	

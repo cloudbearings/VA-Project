@@ -1,6 +1,7 @@
 package com.arthurbergmz.assistant;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,28 +30,27 @@ public class Initializer {
 	
 	public static void main(String[] args){
 		ASSISTANT = new Assistant();
-		AssistantUtils.requestSpeech("Inicializando consciência. Me preparando para responder...");
+		AssistantUtils.requestSpeech(Config.LANGUAGE.getTranslation().onInitialize());
 		allowSpeaking();
 	}
 	
 	public static void allowSpeaking(){
-		GOOGLE_SPEECH = new GoogleSpeech("YOUR CHROMIUM API KEY");
-		GOOGLE_SPEECH.setLanguage(GoogleSpeechLanguage.PORTUGUESE_BRAZIL);
+		GOOGLE_SPEECH = new GoogleSpeech(Config.CHROMIUM_API_KEY);
+		GOOGLE_SPEECH.setLanguage(GoogleSpeechLanguage.getByLanguageCode(Config.LANGUAGE.getLanguageCode()));
 		GOOGLE_SPEECH.registerListener(new GoogleSpeechListener(){
 			public void onResponse(GoogleSpeechResponse response){
 				String str = response.getResponse();
+				System.out.println("VOCÊ: " + str);
 				ASSISTANT.ask(str);
 			}
 		});
 		System.out.println("Você pode começar a falar!");
 		Keyboard kb = new Keyboard();
 		kb.addListener(new KeyboardListener(){
-			private boolean isHoldingButton = false;
 			private Microphone mic = new Microphone(FLACFileWriter.FLAC);
 			private File file = null;
 			public void keyPressed(boolean keyDown, int keyCode){
-				if(keyCode == 18 && keyDown && !this.isHoldingButton){
-					this.isHoldingButton = true;
+				if(keyCode == 18 && keyDown){
 					System.out.println("Gravando...");
 					try{
 						this.file = new File("tmpVirtualAssistant.flac");
@@ -58,14 +58,14 @@ public class Initializer {
 					}catch(Exception e){
 						e.printStackTrace();
 					}
-				}else if(keyCode == 18 && !keyDown && this.isHoldingButton){
-					this.isHoldingButton = false;
+				}else if(keyCode == 18 && !keyDown){
 					try{
 						this.mic.close();
 						byte[] data = Files.readAllBytes(this.mic.getFile().toPath());
+						System.out.println("Finalizando gravação...");
 						Initializer.GOOGLE_SPEECH.recognize(data, (int)this.mic.getAudioFormat().getSampleRate());
 						this.mic.getFile().delete();
-					}catch (Exception e){
+					}catch (IOException e){
 						e.printStackTrace();
 					}
 				}

@@ -3,8 +3,10 @@ package com.arthurbergmz.assistant;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.arthurbergmz.assistant.intelligence.utils.Thought;
+import com.arthurbergmz.assistant.intelligence.memorybank.Memory;
+import com.arthurbergmz.assistant.intelligence.memorybank.Thought;
 import com.arthurbergmz.assistant.misc.Debug;
+import com.arthurbergmz.assistant.misc.SafeList;
 import com.arthurbergmz.assistant.utils.AssistantUtils;
 import com.arthurbergmz.assistant.utils.StringUtils;
 
@@ -12,7 +14,8 @@ public class Assistant {
 	
 	private String name;
 	private String userName;
-	private List<Thought> thoughts;
+	private SafeList<Thought> thoughts;
+	private SafeList<Memory> memoryBank;
 	private List<String> lastQuestions;
 	private List<Thought> lastThoughts;
 	private AssistantWindow window;
@@ -23,7 +26,8 @@ public class Assistant {
 		this.name = null;
 		this.userName = null;
 		this.anger = 0;
-		this.thoughts = new ArrayList<Thought>();
+		this.thoughts = new SafeList<Thought>();
+		this.memoryBank = new SafeList<Memory>();
 		this.lastQuestions = new ArrayList<String>(30);
 		this.lastThoughts = new ArrayList<Thought>(30);
 		AssistantUtils.initializeDefaultThoughts(this);
@@ -69,7 +73,15 @@ public class Assistant {
 	}
 	
 	public List<Thought> getPossibleThoughts(){
-		return this.thoughts;
+		return this.thoughts.getRawList();
+	}
+	
+	public boolean registerMemory(Memory memory){
+		return this.memoryBank.add(memory);
+	}
+	
+	public List<Memory> getMemoryBank(){
+		return this.memoryBank.getRawList();
 	}
 	
 	public List<String> getLastQuestions(){
@@ -101,9 +113,16 @@ public class Assistant {
 	}
 	
 	public void ask(String str){
-		System.out.println(str);
-		//TODO
-		this.say(str);
+		Debug.print(str);
+		Thought thought = AssistantUtils.getMostSimilarThought(str, this.thoughts.getRawList());
+		if(thought == null){
+			this.say(StringUtils.getRandomString(Config.LANGUAGE.getTranslation().onLackOfAnswers()));
+			//TODO "Gostaria de me ensinar?"
+			//TODO Modo de aprendizagem
+		}else{
+			System.out.println("Thought reconhecido: " + thought.getClass().getSimpleName());
+			if(!thought.execute(str, this)) this.say(StringUtils.getRandomString(Config.LANGUAGE.getTranslation().onLackOfAnswers()));
+		}
 	}
 	
 	public void say(String str){
